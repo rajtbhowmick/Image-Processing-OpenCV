@@ -246,7 +246,7 @@ if __name__ == "__main__":
 
     start_AVrecording(filename)
 
-    time.sleep(10)
+    time.sleep(5)
 
     stop_AVrecording(filename)
     print
