@@ -7,10 +7,10 @@ eye_cascade = cv2.CascadeClassifier("cascades/data/haarcascade_eye.xml")
 smile_cascade =cv2.CascadeClassifier("cascades/data/haarcascade_smile.xml")
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read("trainner.yml")
+recognizer.read("training/trainner.yml")
 
 labels={"person_name":1}
-with open("lables.pickle", "rb") as f:
+with open("training/lables.pickle", "rb") as f:
     og_labels = pickle.load(f)
     labels = {v:k for k,v in og_labels.items()}
 
@@ -28,7 +28,7 @@ while(True):
 
         #recognize
         id_, conf = recognizer.predict(roi_gray)
-        if conf>=45: #and conf<=85:
+        if conf>=45 and conf<=85:
             print(id_)
             print(labels[id_])
             font = cv2.FONT_HERSHEY_SIMPLEX

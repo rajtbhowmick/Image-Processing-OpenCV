@@ -3,9 +3,11 @@ import os
 import cv2
 
 
-filename = 'video.avi'
+filename = 'recorded-videos/opencv.avi'
 frames_per_second = 12
 res = '480p'
+#fourcc = 'MJPG'
+#video_writer = cv2.VideoWriter_fourcc(fourcc='MJPG')
 
 def change_res(cap, width, height):
     cap.set(3, width)
@@ -45,10 +47,10 @@ def get_video_type(filename):
     return VIDEO_TYPE['avi']
 
 
-
+#video_writer = cv2.VideoWriter_fourcc(*'MJPG')
 cap = cv2.VideoCapture(0)
-out = cv2.VideoWriter(filename, get_video_type(filename), 12, get_dims(cap, res))
-
+out = cv2.VideoWriter(filename,get_video_type(filename), 12, get_dims(cap, res))
+#out = cv2.VideoWriter(filename,video_writer,12, get_dims(cap, res))
 while True:
     ret, frame = cap.read()
     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

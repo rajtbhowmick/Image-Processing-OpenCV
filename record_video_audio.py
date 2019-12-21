@@ -5,6 +5,7 @@ import threading
 import time
 import subprocess
 import os
+from pynput import keyboard
 
 
 ########################
@@ -30,7 +31,6 @@ import os
 ##
 ########################
 
-
 class VideoRecorder():
 
     # Video class based on openCVq
@@ -41,7 +41,7 @@ class VideoRecorder():
         self.fps = 6  # fps should be the minimum constant rate at which the camera can
         self.fourcc = "MJPG"  # capture images (with no decrease in speed over time; testing is required)
         self.frameSize = (640, 480)  # video formats and sizes also depend and vary according to the camera used
-        self.video_filename = "temp_video.avi"
+        self.video_filename = "recorded-videos/temp_video.avi"
         self.video_cap = cv2.VideoCapture(self.device_index)
         self.video_writer = cv2.VideoWriter_fourcc(*self.fourcc)
         self.video_out = cv2.VideoWriter(self.video_filename, self.video_writer, self.fps, self.frameSize)
@@ -68,12 +68,11 @@ class VideoRecorder():
 
             # Uncomment the following three lines to make the video to be
             # displayed to screen while recording
-
-            #					gray = cv2.cvtColor(video_frame, cv2.COLOR_BGR2GRAY)
-            #					cv2.imshow('video_frame', gray)
-            #					cv2.waitKey(1)
+                #gray = cv2.cvtColor(video_frame, cv2.COLOR_BGR2GRAY)
+                cv2.imshow('video_frame', video_frame)
+                cv2.waitKey(1)
             else:
-                break
+             break
 
             # 0.16 delay -> 6 fps
             #
@@ -107,7 +106,7 @@ class AudioRecorder():
         self.frames_per_buffer = 1024
         self.channels = 2
         self.format = pyaudio.paInt16
-        self.audio_filename = "temp_audio.wav"
+        self.audio_filename = "recorded-videos/temp_audio.wav"
         self.audio = pyaudio.PyAudio()
         self.stream = self.audio.open(format=self.format,
                                       channels=self.channels,
@@ -204,19 +203,19 @@ def stop_AVrecording(filename):
 
         print
         ("Re-encoding")
-        cmd = "ffmpeg -r " + str(recorded_fps) + " -i temp_video.avi -pix_fmt yuv420p -r 6 temp_video2.avi"
+        cmd = "ffmpeg -r " + str(recorded_fps) + " -i recorded-videos/temp_video.avi -pix_fmt yuv420p -r 6 recorded-videos/temp_video2.avi"
         subprocess.call(cmd, shell=True)
 
         print
         ("Muxing")
-        cmd = "ffmpeg -ac 2 -channel_layout stereo -i temp_audio.wav -i temp_video2.avi -pix_fmt yuv420p " + filename + ".avi"
+        cmd = "ffmpeg -ac 2 -channel_layout stereo -i recorded-videos/temp_audio.wav -i recorded-videos/temp_video2.avi -pix_fmt yuv420p " + filename + ".avi"
         subprocess.call(cmd, shell=True)
 
     else:
 
         print
         ("Normal recording\nMuxing")
-        cmd = "ffmpeg -ac 2 -channel_layout stereo -i temp_audio.wav -i temp_video.avi -pix_fmt yuv420p " + filename + ".avi"
+        cmd = "ffmpeg -ac 2 -channel_layout stereo -i recorded-videos/temp_audio.wav -i recorded-videos/temp_video.avi -pix_fmt yuv420p " + filename + ".avi"
         subprocess.call(cmd, shell=True)
 
         print
@@ -227,21 +226,20 @@ def stop_AVrecording(filename):
 def file_manager(filename):
     local_path = os.getcwd()
 
-    if os.path.exists(str(local_path) + "/temp_audio.wav"):
-        os.remove(str(local_path) + "/temp_audio.wav")
+    if os.path.exists(str(local_path) + "recorded-videos/temp_audio.wav"):
+        os.remove(str(local_path) + "recorded-videos/temp_audio.wav")
 
-    if os.path.exists(str(local_path) + "/temp_video.avi"):
-        os.remove(str(local_path) + "/temp_video.avi")
+    if os.path.exists(str(local_path) + "recorded-videos/temp_video.avi"):
+        os.remove(str(local_path) + "recorded-videos/temp_video.avi")
 
-    if os.path.exists(str(local_path) + "/temp_video2.avi"):
-        os.remove(str(local_path) + "/temp_video2.avi")
+    if os.path.exists(str(local_path) + "recorded-videos/temp_video2.avi"):
+        os.remove(str(local_path) + "recorded-videos/temp_video2.avi")
 
-    if os.path.exists(str(local_path) + "/" + filename + ".avi"):
-        os.remove(str(local_path) + "/" + filename + ".avi")
-
+    # if os.path.exists(str(local_path) + "recorded-videos" + filename + ".avi"):
+    #     os.remove(str(local_path) + "recorded-videos" + filename + ".avi")
 
 if __name__ == "__main__":
-    filename = "Default_user"
+    filename = "recorded-videos/opencv_pyaudioy"
     file_manager(filename)
 
     start_AVrecording(filename)
